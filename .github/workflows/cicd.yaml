@@ -43,9 +43,12 @@ jobs:
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-pip jq
-        python3 -m pip install --user yq
-        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        sudo apt-get install -y python3-venv jq
+
+        python3 -m venv "$RUNNER_TEMP/yq-venv"
+        "$RUNNER_TEMP/yq-venv/bin/pip" install yq
+
+        echo "$RUNNER_TEMP/yq-venv/bin" >> "$GITHUB_PATH"
 
     - name: Modify ArgoCD values file
       shell: bash
