@@ -32,18 +32,27 @@ jobs:
     needs: ci
     runs-on: self-hosted
     steps:
+    - uses: actions/checkout@v3
+
     - name: Modify ArgoCD values file
       shell: bash
       run: |
         echo ${{ needs.ci.outputs.commit_id }}
-        sed -i -E "s|^([[:space:]]*tag:[[:space:]]*).*|\1${{ needs.ci.outputs.commit_id }}|" \
-          charts/python-app/values.yaml
+        pip install yq
+        yq -Yi '.image.tag = "${{ needs.ci.outputs.commit_id }}"' charts/python-app/values.yaml
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Updates values.yaml with commit id ${{ needs.ci.outputs.commit_id }}'
+
     - name: Install ArgoCD CLI
       shell: bash
       run: |
         curl -k -sSL -o argocd https://argocd-server.argocd/download/argocd-linux-amd64
         chmod +x argocd
         sudo mv ./argocd /usr/local/bin/argocd
+        
     - name: Shorten commit id
       shell: bash
       run: |
