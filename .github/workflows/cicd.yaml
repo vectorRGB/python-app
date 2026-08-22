@@ -25,11 +25,19 @@ jobs:
       with:
         push: true
         tags: vectorrgb/python-app:${{ env.COMMIT_ID }}
+    outputs:
+      commit_id: ${{ env.COMMIT_ID }}
 
   cd:
     needs: ci
     runs-on: self-hosted
     steps:
+    - name: Modify ArgoCD values file
+      shell: bash
+      run: |
+        echo ${{ needs.ci.outputs.commit_id }}
+        sed -i -E "s|^([[:space:]]*tag:[[:space:]]*).*|\1${{ needs.ci.outputs.commit_id }}|" \
+          charts/python-app/values.yaml
     - name: Install ArgoCD CLI
       shell: bash
       run: |
