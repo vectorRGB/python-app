@@ -30,6 +30,12 @@ jobs:
     needs: ci
     runs-on: ArgoCD app sync
     steps:
+    - name: Install ArgoCD CLI
+      shell: bash
+      run: |
+        curl -k -sSL -o argocd https://argocd-server.argocd/download/argocd-linux-amd64
+        chmod +x argocd
+        mv ./argocd /usr/local/bin/argocd
     - name: Shorten commit id
       shell: bash
       run: |
