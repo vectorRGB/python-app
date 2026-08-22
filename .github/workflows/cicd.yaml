@@ -28,7 +28,7 @@ jobs:
 
   cd:
     needs: ci
-    runs-on: ArgoCD app sync
+    runs-on: self-hosted
     steps:
     - name: Install ArgoCD CLI
       shell: bash
