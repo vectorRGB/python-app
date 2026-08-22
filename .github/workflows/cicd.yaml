@@ -72,12 +72,14 @@ jobs:
         chmod +x argocd
         sudo mv ./argocd /usr/local/bin/argocd
 
-    - name: Shorten commit id
+    - name: Login to ArgoCD and sync application
       shell: bash
+      env:
+        ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
       run: |
         argocd login argocd-server.argocd \
           --insecure \
           --grpc-web \
           --username admin \
-          --password ${{ secrets.ARGOCD_PASSWORD }}
+          --password $ARGOCD_PASSWORD
         argocd app sync python-app
